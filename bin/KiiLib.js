@@ -187,6 +187,20 @@ var Kii;
         }
         signUp(info, password) {
             return new Promise((resolve, reject) => {
+                info['password'] = password;
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/' + c.getAppId() + '/users';
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('POST');
+                client.setKiiHeader(c, false);
+                client.setContentType('application/json');
+                client.sendJson(info).then((resp) => {
+                    var id = resp.body['userID'];
+                    resolve(new Kii.KiiUser(id));
+                }).catch((error) => {
+                    reject({ code: error.status, message: error.message });
+                });
             });
         }
         execLogin(params) {
@@ -204,7 +218,7 @@ var Kii;
                     this.context.setAccessToken(accessToken);
                     resolve(new Kii.KiiUser(id));
                 }).catch((error) => {
-                    reject({ code: error.status, message: '' });
+                    reject({ code: error.status, message: error.message });
                 });
             });
         }

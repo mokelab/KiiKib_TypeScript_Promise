@@ -25,6 +25,23 @@ module Kii {
 
         signUp(info : any, password : string) : Promise<KiiUser> {
             return new Promise<KiiUser>((resolve : (user : KiiUser) => void, reject : (err : KiiError) => void) => {
+	        info['password'] = password;
+	    
+	        var c : KiiContext = this.context;
+	        var url = c.getServerUrl() + '/apps/'+ c.getAppId() + '/users';
+		
+	        var client : HttpClient = c.getNewClient();
+	        client.setUrl(url);
+	        client.setMethod('POST');
+	        client.setKiiHeader(c, false);
+	        client.setContentType('application/json');
+                
+	        client.sendJson(info).then((resp : HttpResponse) => {
+		    var id = resp.body['userID'];
+                    resolve(new KiiUser(id));
+		}).catch((error : HttpError) => {
+                    reject({code : error.status, message : error.message});
+		});
             });
         }
 
@@ -45,7 +62,7 @@ module Kii {
                     this.context.setAccessToken(accessToken);
                     resolve(new KiiUser(id));
                 }).catch((error : HttpError) => {
-                    reject({code : error.status, message : ''});
+                    reject({code : error.status, message : error.message});
                 });
             });
         }
