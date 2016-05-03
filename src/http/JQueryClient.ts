@@ -35,7 +35,7 @@ module jquery {
 	}
 
 	sendText(text : string) : Promise<Kii.HttpResponse> {
-	    var data = {
+	    return this.sendRequest({
 		url : this.url,
 		type : this.method,
 		headers : this.headers,
@@ -43,8 +43,7 @@ module jquery {
 		scriptCharset: 'utf-8',
 		data : text,
 		processData : false
-	    };
-	    return this.sendRequest(data);
+	    });
 	}
 	
 	sendJson(json : any) : Promise<Kii.HttpResponse> {
@@ -52,51 +51,62 @@ module jquery {
 	}
 
 	send() : Promise<Kii.HttpResponse> {
-	    var data = {
+            return this.sendRequest({
 		url : this.url,
 		type : this.method,
 		headers : this.headers,
 		dataType : 'json',
 		scriptCharset: 'utf-8',
 		processData : false
-	    };
-	    return this.sendRequest(data);
+	    });	    
 	}
 
 	private sendRequest(data : any) : Promise<Kii.HttpResponse> {
             return new Promise<Kii.HttpResponse>((resolve : (r : Kii.HttpResponse) => void, reject : (e : Kii.HttpError) => void) => {
 	        $.ajax(data).done((data_ : any, status : number, data : any) => {
-		    if (data.status == 204) {
-                        resolve({
-                            status : data.status,
-                            headers : data.getAllResponseHeaders(),
-                            body : {}
-                        });
-		    } else {
-                        resolve({
-                            status : data.status,
-                            headers : data.getAllResponseHeaders(),
-                            body : JSON.parse(data.responseText),
-                        });
-		    }
+                    resolve(this.parseResponse(data));
 		}).fail((data : any) => {
-                    if (data.status == 204) {
-                        resolve({
-                            status : data.status,
-                            headers : data.getAllResponseHeaders(),
-                            body : {}
-                        });
-                    } else {
-                        reject({
-                            status : data.status,
-                            code : '',
-                            desc : '',
-                            headers : data.getAllResponseHeaders(),
-                            body : {},
-                        });
+                    if (200 <= data.status && data.status < 300) {
+                        resolve(this.parseResponse(data));
+                        return;
                     }
+                    var code;
+                    var message;
+                    try {
+                        var body = JSON.parse(data.responseText);
+                        code = body['errorCode'];
+                        message = body['message'];
+                    } catch (e) {
+                        code = 'UNKNOWN';
+                        message = data.responseText;
+                    }
+                    reject({
+                        status : data.status,
+                        code : code,
+                        message : message,
+                        headers : data.getAllResponseHeaders(),
+                        body : data.responseText,
+                    });
 		});
             });	  
 	}
+
+        private parseResponse(data : any) {
+            var body;
+            try {
+                if (data.status == 204) {
+                    body = {};
+                } else {
+                    body = JSON.parse(data.responseText);
+                }
+            } catch (e) {
+                body = data.responseText;
+            }            
+            return {
+                status : data.status,
+                headers : data.getAllResponseHeaders(),
+                body : body,
+            };
+        }
     }
 }

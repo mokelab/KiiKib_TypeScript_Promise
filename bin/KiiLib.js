@@ -47,7 +47,7 @@ var jquery;
             }
         }
         sendText(text) {
-            var data = {
+            return this.sendRequest({
                 url: this.url,
                 type: this.method,
                 headers: this.headers,
@@ -55,59 +55,69 @@ var jquery;
                 scriptCharset: 'utf-8',
                 data: text,
                 processData: false
-            };
-            return this.sendRequest(data);
+            });
         }
         sendJson(json) {
             return this.sendText(JSON.stringify(json));
         }
         send() {
-            var data = {
+            return this.sendRequest({
                 url: this.url,
                 type: this.method,
                 headers: this.headers,
                 dataType: 'json',
                 scriptCharset: 'utf-8',
                 processData: false
-            };
-            return this.sendRequest(data);
+            });
         }
         sendRequest(data) {
             return new Promise((resolve, reject) => {
                 $.ajax(data).done((data_, status, data) => {
-                    if (data.status == 204) {
-                        resolve({
-                            status: data.status,
-                            headers: data.getAllResponseHeaders(),
-                            body: {}
-                        });
-                    }
-                    else {
-                        resolve({
-                            status: data.status,
-                            headers: data.getAllResponseHeaders(),
-                            body: JSON.parse(data.responseText),
-                        });
-                    }
+                    resolve(this.parseResponse(data));
                 }).fail((data) => {
-                    if (data.status == 204) {
-                        resolve({
-                            status: data.status,
-                            headers: data.getAllResponseHeaders(),
-                            body: {}
-                        });
+                    if (200 <= data.status && data.status < 300) {
+                        resolve(this.parseResponse(data));
+                        return;
                     }
-                    else {
-                        reject({
-                            status: data.status,
-                            code: '',
-                            desc: '',
-                            headers: data.getAllResponseHeaders(),
-                            body: {},
-                        });
+                    var code;
+                    var message;
+                    try {
+                        var body = JSON.parse(data.responseText);
+                        code = body['errorCode'];
+                        message = body['message'];
                     }
+                    catch (e) {
+                        code = 'UNKNOWN';
+                        message = data.responseText;
+                    }
+                    reject({
+                        status: data.status,
+                        code: code,
+                        message: message,
+                        headers: data.getAllResponseHeaders(),
+                        body: data.responseText,
+                    });
                 });
             });
+        }
+        parseResponse(data) {
+            var body;
+            try {
+                if (data.status == 204) {
+                    body = {};
+                }
+                else {
+                    body = JSON.parse(data.responseText);
+                }
+            }
+            catch (e) {
+                body = data.responseText;
+            }
+            return {
+                status: data.status,
+                headers: data.getAllResponseHeaders(),
+                body: body,
+            };
         }
     }
     jquery.JQueryClient = JQueryClient;

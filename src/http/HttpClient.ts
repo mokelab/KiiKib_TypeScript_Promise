@@ -28,7 +28,7 @@ module Kii {
     export interface HttpError {
         status : number;
         code : string;
-        desc : string;
+        message : string;
         // original response
         headers : any;
         body : any;

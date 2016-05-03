@@ -40,7 +40,7 @@ declare module Kii {
     interface HttpError {
         status: number;
         code: string;
-        desc: string;
+        message: string;
         headers: any;
         body: any;
     }
@@ -61,6 +61,7 @@ declare module jquery {
         sendJson(json: any): Promise<Kii.HttpResponse>;
         send(): Promise<Kii.HttpResponse>;
         private sendRequest(data);
+        private parseResponse(data);
     }
 }
 declare module Kii {
