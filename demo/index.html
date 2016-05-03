@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+  <section id="container"></section>
+  <script id="loginTemplate" type="text/ractive">
+    <h1>Top page</h1>
+    <div>
+      <label for="appId">App ID</label><input type="text" id="appId" value="{{appId}}"><br/>
+      <label for="appKey">App Key</label><input type="text" id="appKey" value="{{appKey}}"><br/><br/>
+      <label for="id">Identifier</label><input type="text" id="id" value="{{id}}"><br/>
+      <label for="pass">Password</label><input type="password" id="pass" value="{{pass}}"><br/>
+      <button on-click="login">Login</button>
+    </div>
+  </script>
+
+  <script id="topTemplate" type="text/ractive">
+    <h1>Main menu</h1>
+    <ul>
+      <li on-click="appScope">Application Scope bucket</li>
+    </ul>
+  </script>
+
+  <script id="bucketTemplate" type="text/ractive">
+    <div>
+      <label for="name">Bucket name</label><input type="text" id="name" value="{{name}}"><button on-click="query">Query</button>
+    <div>
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ractive/0.7.3/ractive.js"></script>
+  <!-- for backbone.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.9.0.min.js"></script>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js"></script>
+  <script src="../bin/KiiLib.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
