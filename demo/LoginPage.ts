@@ -10,6 +10,10 @@ class LoginPage implements Page {
         this.ractive = new Ractive({
             el : '#container',
             template : '#loginTemplate',
+            data : {
+                appId : '',
+                appKey : '',
+            },
         });
         this.ractive.on({
             login : () => {
@@ -26,7 +30,7 @@ class LoginPage implements Page {
         
         this.app.initKiiAPI(appId, appKey);
         this.app.appAPI.login(id, pass).then((user : Kii.KiiUser) => {
-            console.log('OK ' + user);
+            this.app.showPage('top');
         }).catch((error : Kii.KiiError) => {
             console.log('error!' + error);
         });

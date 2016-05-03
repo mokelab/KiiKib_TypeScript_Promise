@@ -93,3 +93,76 @@ declare module Kii {
         private execLogin(params);
     }
 }
+declare module Kii {
+    class KiiApp {
+        getPath(): string;
+    }
+}
+declare module Kii {
+    class KiiBucket {
+        owner: any;
+        name: string;
+        constructor(owner: any, name: string);
+        getName(): string;
+        getPath(): string;
+    }
+}
+declare module Kii {
+    class KiiObject {
+        bucket: KiiBucket;
+        id: string;
+        data: any;
+        constructor(bucket: KiiBucket, id: string, data: any);
+        getId(): string;
+        getPath(): string;
+    }
+}
+declare module Kii {
+    class KiiClause {
+        clause: any;
+        constructor(type: string);
+        static all(): KiiClause;
+        static equals(field: string, value: any): KiiClause;
+        static greaterThan(field: string, value: any, include: boolean): KiiClause;
+        static lessThan(field: string, value: any, include: boolean): KiiClause;
+        static range(field: string, fromValue: any, fromInclude: boolean, toValue: any, toInclude: boolean): KiiClause;
+        static inClause<T>(field: string, values: Array<T>): KiiClause;
+        static not(clause: KiiClause): KiiClause;
+        static andClause(array: Array<KiiClause>): KiiClause;
+        static orClause(array: Array<KiiClause>): KiiClause;
+        private static toClauses(array);
+        toJson(): any;
+    }
+}
+declare module Kii {
+    class QueryParams {
+        clause: KiiClause;
+        orderBy: string;
+        descending: boolean;
+        limit: number;
+        paginationKey: string;
+        constructor(clause: any);
+        sortByAsc(field: string): void;
+        sortByDesc(field: string): void;
+        setLimit(limit: number): void;
+        setPaginationKey(key: string): void;
+        hasNext(): boolean;
+        toJson(): any;
+    }
+}
+declare module Kii {
+    interface BucketAPI {
+        query(bucket: KiiBucket, params: QueryParams): Promise<QueryResult>;
+    }
+    interface QueryResult {
+        results: Array<KiiObject>;
+        params: QueryParams;
+    }
+}
+declare module Kii {
+    class KiiBucketAPI implements BucketAPI {
+        context: KiiContext;
+        constructor(context: KiiContext);
+        query(bucket: KiiBucket, params: QueryParams): Promise<QueryResult>;
+    }
+}

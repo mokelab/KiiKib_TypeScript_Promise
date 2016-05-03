@@ -23,7 +23,7 @@ var AppRouter = Backbone.Router.extend({
         this.showPage(new TopPage(app));
     },
     appBucket : function() {
-        this.showPage(new BucketPage(app));
+        this.showPage(new BucketPage(app, new Kii.KiiApp()));
     },
     showPage : function(page : Page) {
         app.page = page;

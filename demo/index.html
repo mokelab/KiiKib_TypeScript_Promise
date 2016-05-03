@@ -21,13 +21,34 @@
     <h1>Main menu</h1>
     <ul>
       <li on-click="appScope">Application Scope bucket</li>
-    </ul>
+    </ul>    
   </script>
 
   <script id="bucketTemplate" type="text/ractive">
+    <h1>Object browser</h1>
     <div>
       <label for="name">Bucket name</label><input type="text" id="name" value="{{name}}"><button on-click="query">Query</button>
     <div>
+
+    {{#if list.length > 0}}
+    <table>
+      <thead><tr><th>ID</th>
+          {{#fieldList:i}}
+          <th>{{.}} <span on-click="removeField:{{i}}">[-]</span></th>
+          {{/}}
+          <th><input type="text" value="{{fieldName}}"><button on-click="addField">+</button></th>
+      </tr></thead>
+      <tbody>
+        {{#list}}
+        <tr><td>{{id}}</td>
+          {{#fieldList:i}}
+          <td>{{data[.]}}</td>
+          {{/}}
+        </tr>
+        {{/}}
+      </tbody>
+    </table>
+    {{/if}}
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ractive/0.7.3/ractive.js"></script>

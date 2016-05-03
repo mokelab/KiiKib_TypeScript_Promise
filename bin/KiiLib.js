@@ -201,3 +201,221 @@ var Kii;
     }
     Kii.KiiAppAPI = KiiAppAPI;
 })(Kii || (Kii = {}));
+var Kii;
+(function (Kii) {
+    class KiiApp {
+        getPath() {
+            return '';
+        }
+    }
+    Kii.KiiApp = KiiApp;
+})(Kii || (Kii = {}));
+///<reference path="./KiiApp.ts"/>
+var Kii;
+(function (Kii) {
+    class KiiBucket {
+        constructor(owner, name) {
+            this.owner = owner;
+            this.name = name;
+        }
+        getName() {
+            return this.name;
+        }
+        getPath() {
+            return this.owner.getPath() + '/buckets/' + this.name;
+        }
+    }
+    Kii.KiiBucket = KiiBucket;
+})(Kii || (Kii = {}));
+/// <reference path="KiiBucket.ts"/>
+var Kii;
+(function (Kii) {
+    class KiiObject {
+        constructor(bucket, id, data) {
+            this.bucket = bucket;
+            this.id = id;
+            this.data = data;
+        }
+        getId() {
+            return this.id;
+        }
+        getPath() {
+            return this.bucket.getPath() +
+                '/objects/' + this.id;
+        }
+    }
+    Kii.KiiObject = KiiObject;
+})(Kii || (Kii = {}));
+var Kii;
+(function (Kii) {
+    class KiiClause {
+        constructor(type) {
+            this.clause = {
+                'type': type
+            };
+        }
+        static all() {
+            return new KiiClause('all');
+        }
+        static equals(field, value) {
+            var c = new KiiClause('eq');
+            c.clause['field'] = field;
+            c.clause['value'] = value;
+            return c;
+        }
+        static greaterThan(field, value, include) {
+            var c = new KiiClause('range');
+            c.clause['field'] = field;
+            c.clause['lowerLimit'] = value;
+            c.clause['lowerIncluded'] = include;
+            return c;
+        }
+        static lessThan(field, value, include) {
+            var c = new KiiClause('range');
+            c.clause['field'] = field;
+            c.clause['upperLimit'] = value;
+            c.clause['upperIncluded'] = include;
+            return c;
+        }
+        static range(field, fromValue, fromInclude, toValue, toInclude) {
+            var c = new KiiClause('range');
+            c.clause['field'] = field;
+            c.clause['lowerLimit'] = fromValue;
+            c.clause['lowerIncluded'] = fromInclude;
+            c.clause['upperLimit'] = toValue;
+            c.clause['upperIncluded'] = toInclude;
+            return c;
+        }
+        static inClause(field, values) {
+            var c = new KiiClause('in');
+            c.clause['field'] = field;
+            c.clause['values'] = values;
+            return c;
+        }
+        static not(clause) {
+            var c = new KiiClause('not');
+            c.clause['clause'] = clause.toJson();
+            return c;
+        }
+        static andClause(array) {
+            var c = new KiiClause('and');
+            c.clause['clauses'] = KiiClause.toClauses(array);
+            return c;
+        }
+        static orClause(array) {
+            var c = new KiiClause('or');
+            c.clause['clauses'] = KiiClause.toClauses(array);
+            return c;
+        }
+        static toClauses(array) {
+            for (var i = 0; i < array.length; ++i) {
+                array[i] = array[i].toJson();
+            }
+            return array;
+        }
+        toJson() {
+            return this.clause;
+        }
+    }
+    Kii.KiiClause = KiiClause;
+})(Kii || (Kii = {}));
+/// <reference path="KiiClause.ts"/>
+var Kii;
+(function (Kii) {
+    class QueryParams {
+        constructor(clause) {
+            this.clause = clause;
+            this.orderBy = null;
+            this.descending = false;
+            this.paginationKey = null;
+            this.limit = 0;
+        }
+        sortByAsc(field) {
+            this.orderBy = field;
+            this.descending = false;
+        }
+        sortByDesc(field) {
+            this.orderBy = field;
+            this.descending = true;
+        }
+        setLimit(limit) {
+            this.limit = limit;
+        }
+        setPaginationKey(key) {
+            if (typeof key == 'undefined') {
+                key = null;
+            }
+            this.paginationKey = key;
+        }
+        hasNext() {
+            return this.paginationKey != null;
+        }
+        toJson() {
+            var query = {
+                'clause': this.clause.toJson()
+            };
+            if (this.orderBy != null) {
+                query['orderBy'] = this.orderBy;
+                query['descending'] = this.descending;
+            }
+            var json = {
+                'bucketQuery': query
+            };
+            if (this.limit > 0) {
+                json['bestEffortLimit'] = this.limit;
+            }
+            if (this.paginationKey != null) {
+                json['paginationKey'] = this.paginationKey;
+            }
+            return json;
+        }
+    }
+    Kii.QueryParams = QueryParams;
+})(Kii || (Kii = {}));
+/// <reference path="../model/KiiBucket.ts"/>
+/// <reference path="../model/KiiObject.ts"/>
+/// <reference path="./QueryParams.ts"/>
+/// <reference path="../BucketAPI.ts" />
+/// <reference path="../KiiContext.ts" />
+var Kii;
+(function (Kii) {
+    class KiiBucketAPI {
+        constructor(context) {
+            this.context = context;
+        }
+        query(bucket, params) {
+            return new Promise((resolve, reject) => {
+                var c = this.context;
+                var url = c.getServerUrl() +
+                    '/apps/' + c.getAppId() +
+                    bucket.getPath() +
+                    '/query';
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('POST');
+                client.setKiiHeader(c, true);
+                client.setContentType('application/vnd.kii.QueryRequest+json');
+                var resp;
+                client.sendJson(params.toJson()).then((resp) => {
+                    var nextPaginationKey = resp.body['nextPaginationKey'];
+                    params.setPaginationKey(nextPaginationKey);
+                    var respArray = resp.body['results'];
+                    var result = new Array();
+                    for (var i = 0; i < respArray.length; ++i) {
+                        var item = respArray[i];
+                        var id = item['_id'];
+                        result.push(new Kii.KiiObject(bucket, id, item));
+                    }
+                    ;
+                    resolve({
+                        results: result,
+                        params: params
+                    });
+                }).catch((error) => {
+                    reject({ code: error.status, message: '' });
+                });
+            });
+        }
+    }
+    Kii.KiiBucketAPI = KiiBucketAPI;
+})(Kii || (Kii = {}));
