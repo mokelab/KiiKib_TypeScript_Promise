@@ -436,10 +436,112 @@ var Kii;
                         params: params
                     });
                 }).catch((error) => {
-                    reject({ code: error.status, message: '' });
+                    reject({ code: error.status, message: error.message });
                 });
             });
         }
     }
     Kii.KiiBucketAPI = KiiBucketAPI;
+})(Kii || (Kii = {}));
+/// <reference path="../model/KiiBucket.ts"/>
+/// <reference path="../model/KiiBucket.ts"/>
+/// <reference path="../ObjectAPI.ts" />
+/// <reference path="../KiiContext.ts" />
+var Kii;
+(function (Kii) {
+    class KiiObjectAPI {
+        constructor(context) {
+            this.context = context;
+        }
+        create(bucket, data) {
+            return new Promise((resolve, reject) => {
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/' + c.getAppId() +
+                    bucket.getPath() + '/objects';
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('POST');
+                client.setKiiHeader(c, true);
+                client.setContentType('application/json');
+                client.sendJson(data).then((resp) => {
+                    var id = resp.body['objectID'];
+                    resolve(new Kii.KiiObject(bucket, id, data));
+                }).catch((error) => {
+                    reject({ code: error.status, message: error.message });
+                });
+            });
+        }
+        getById(bucket, id) {
+            return new Promise((resolve, reject) => {
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/' + c.getAppId() +
+                    bucket.getPath() + '/objects/' + id;
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('GET');
+                client.setKiiHeader(c, true);
+                client.send().then((resp) => {
+                    resolve(new Kii.KiiObject(bucket, id, resp.body));
+                }).catch((error) => {
+                    reject({ code: error.status, message: error.message });
+                });
+            });
+        }
+        update(obj) {
+            return new Promise((resolve, reject) => {
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/' + c.getAppId() +
+                    obj.getPath();
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('PUT');
+                client.setKiiHeader(c, true);
+                client.setContentType('application/json');
+                client.sendJson(obj.data).then((resp) => {
+                    resolve(obj);
+                }).catch((error) => {
+                    reject({ code: error.status, message: error.message });
+                });
+            });
+        }
+        updatePatch(obj, patch) {
+            return new Promise((resolve, reject) => {
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/' + c.getAppId() +
+                    obj.getPath();
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('POST');
+                client.setKiiHeader(c, true);
+                client.setHeader('X-HTTP-Method-Override', 'PATCH');
+                client.setContentType('application/json');
+                client.sendJson(patch).then((resp) => {
+                    // apply patch
+                    for (var k in patch) {
+                        obj.data[k] = patch[k];
+                    }
+                    resolve(obj);
+                }).catch((error) => {
+                    reject({ code: error.status, message: error.message });
+                });
+            });
+        }
+        deleteObject(obj) {
+            return new Promise((resolve, reject) => {
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/' + c.getAppId() +
+                    obj.getPath();
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('DELETE');
+                client.setKiiHeader(c, true);
+                client.send().then((resp) => {
+                    resolve(true);
+                }).catch((error) => {
+                    reject({ code: error.status, message: error.message });
+                });
+            });
+        }
+    }
+    Kii.KiiObjectAPI = KiiObjectAPI;
 })(Kii || (Kii = {}));

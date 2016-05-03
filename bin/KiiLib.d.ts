@@ -167,3 +167,23 @@ declare module Kii {
         query(bucket: KiiBucket, params: QueryParams): Promise<QueryResult>;
     }
 }
+declare module Kii {
+    interface ObjectAPI {
+        create(bucket: KiiBucket, data: any): Promise<KiiObject>;
+        getById(bucket: KiiBucket, id: string): Promise<KiiObject>;
+        update(obj: KiiObject): Promise<KiiObject>;
+        updatePatch(obj: KiiObject, patch: any): Promise<KiiObject>;
+        deleteObject(obj: KiiObject): Promise<boolean>;
+    }
+}
+declare module Kii {
+    class KiiObjectAPI implements ObjectAPI {
+        context: KiiContext;
+        constructor(context: KiiContext);
+        create(bucket: KiiBucket, data: any): Promise<KiiObject>;
+        getById(bucket: KiiBucket, id: string): Promise<KiiObject>;
+        update(obj: KiiObject): Promise<KiiObject>;
+        updatePatch(obj: KiiObject, patch: any): Promise<KiiObject>;
+        deleteObject(obj: KiiObject): Promise<boolean>;
+    }
+}

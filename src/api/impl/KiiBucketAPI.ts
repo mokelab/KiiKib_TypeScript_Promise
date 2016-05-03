@@ -40,7 +40,7 @@ module Kii {
                             params : params
                     });
 	        }).catch((error : HttpError) => {
-                    reject({code : error.status, message : ''});
+                    reject({code : error.status, message : error.message});
 	        });
 	    });
         }

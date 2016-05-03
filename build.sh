@@ -1,5 +1,8 @@
 #!/bin/sh
 cd src/api/impl
-tsc -target es6 KiiAppAPI.ts KiiBucketAPI.ts \
+tsc -target es6 \
+KiiAppAPI.ts \
+KiiBucketAPI.ts \
+KiiObjectAPI.ts \
 -d \
 -out ../../../bin/KiiLib.js 
