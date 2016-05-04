@@ -187,3 +187,18 @@ declare module Kii {
         deleteObject(obj: KiiObject): Promise<boolean>;
     }
 }
+declare module Kii {
+    interface ACLAPI {
+        grant(target: any, verb: string, subject: any): Promise<boolean>;
+        revoke(target: any, verb: string, subject: any): Promise<boolean>;
+    }
+}
+declare module Kii {
+    class KiiACLAPI implements ACLAPI {
+        context: KiiContext;
+        constructor(context: KiiContext);
+        grant(target: any, verb: string, subject: any): Promise<boolean>;
+        revoke(target: any, verb: string, subject: any): Promise<boolean>;
+        private exec(method, target, verb, subject);
+    }
+}

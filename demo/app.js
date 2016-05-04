@@ -2,13 +2,22 @@ class LoginPage {
     constructor(app) {
         this.app = app;
     }
+    loginRequired() {
+        return false;
+    }
     onCreate() {
+        if (this.app.loggedIn) {
+            this.app.showPage('top');
+            return;
+        }
         this.ractive = new Ractive({
             el: '#container',
             template: '#loginTemplate',
             data: {
-                appId: 'd8d48a46',
-                appKey: '50375c4b608dc79469796e4a06638439',
+                appId: '',
+                appKey: '',
+                sites: [{ name: 'US', url: 'https://api.kii.com/api' },
+                    { name: 'JP', url: 'https://api-jp.kii.com/api' }],
             },
         });
         this.ractive.on({
@@ -20,10 +29,12 @@ class LoginPage {
     login() {
         var appId = this.ractive.get('appId');
         var appKey = this.ractive.get('appKey');
+        var site = this.ractive.get('site');
         var id = this.ractive.get('id');
         var pass = this.ractive.get('pass');
-        this.app.initKiiAPI(appId, appKey);
+        this.app.initKiiAPI(appId, appKey, site);
         this.app.appAPI.login(id, pass).then((user) => {
+            this.app.saveContext();
             this.app.showPage('top');
         }).catch((error) => {
             console.log('error!' + error);
@@ -33,6 +44,9 @@ class LoginPage {
 class TopPage {
     constructor(app) {
         this.app = app;
+    }
+    loginRequired() {
+        return false;
     }
     onCreate() {
         this.ractive = new Ractive({
@@ -53,6 +67,9 @@ class BucketPage {
     constructor(app, owner) {
         this.app = app;
         this.owner = owner;
+    }
+    loginRequired() {
+        return false;
     }
     onCreate() {
         this.ractive = new Ractive({
@@ -98,11 +115,33 @@ class BucketPage {
 ///<reference path="../bin/KiiLib.d.ts"/>
 class Application {
     start() {
+        this.loadContext();
     }
-    initKiiAPI(appId, appKey) {
-        var context = new Kii.KiiContext(appId, appKey, 'https://api-jp.kii.com/api');
-        this.appAPI = new Kii.KiiAppAPI(context);
-        this.bucketAPI = new Kii.KiiBucketAPI(context);
+    loadContext() {
+        try {
+            var c = JSON.parse(sessionStorage.getItem('context'));
+            this.initKiiAPI(c.appId, c.appKey, c.site);
+            this.context.setAccessToken(c.token);
+            this.loggedIn = true;
+        }
+        catch (e) {
+            this.context = null;
+            this.loggedIn = false;
+        }
+    }
+    saveContext() {
+        var data = {
+            appId: this.context.getAppId(),
+            appKey: this.context.getAppKey(),
+            site: this.context.getServerUrl(),
+            token: this.context.getAccessToken(),
+        };
+        sessionStorage.setItem('context', JSON.stringify(data));
+    }
+    initKiiAPI(appId, appKey, site) {
+        this.context = new Kii.KiiContext(appId, appKey, site);
+        this.appAPI = new Kii.KiiAppAPI(this.context);
+        this.bucketAPI = new Kii.KiiBucketAPI(this.context);
     }
     showPage(name) {
         this.router.navigate(name, { trigger: true });

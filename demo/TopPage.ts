@@ -5,6 +5,10 @@ class TopPage implements Page {
     constructor(app : Application) {
         this.app = app;
     }
+
+    loginRequired() : boolean {
+        return false;
+    }
     
     onCreate() {
         this.ractive = new Ractive({

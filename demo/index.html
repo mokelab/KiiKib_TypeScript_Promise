@@ -9,10 +9,22 @@
   <script id="loginTemplate" type="text/ractive">
     <h1>Top page</h1>
     <div>
-      <label for="appId">App ID</label><input type="text" id="appId" value="{{appId}}"><br/>
-      <label for="appKey">App Key</label><input type="text" id="appKey" value="{{appKey}}"><br/><br/>
-      <label for="id">Identifier</label><input type="text" id="id" value="{{id}}"><br/>
-      <label for="pass">Password</label><input type="password" id="pass" value="{{pass}}"><br/>
+      <table>
+        <tbody>
+          <tr><th>App ID</th><td><input type="text" id="appId" value="{{appId}}"></td></tr>
+          <tr><th>App Key</th><td><input type="text" id="appKey" value="{{appKey}}"></td></tr>
+          <tr><th>Site</th><td><select value="{{site}}">
+              {{#sites}}
+              <option value="{{url}}">{{name}}</option>
+              {{/}}
+            </select>
+          </td></tr>
+
+          <tr><th>Identifier</th><td><input type="text" id="id" value="{{id}}"></td></tr>
+          <tr><th>Password</th><td><input type="password" id="pass" value="{{pass}}"></td></tr>
+        </tbody>
+      </table><br/>
+
       <button on-click="login">Login</button>
     </div>
   </script>
@@ -48,6 +60,10 @@
         {{/}}
       </tbody>
     </table>
+
+    <div style="width: 48px;position:fixed;right:16px;bottom:16px;height: 48px;border-radius: 24px;background-color: cadetblue;cursor: pointer;">
+      <p style="margin: 12px 12px;width: 24px;height: 24px;position: relative;text-align: center;line-height: 24px;color: white;">+</p>
+    </div>
     {{/if}}
   </script>
 

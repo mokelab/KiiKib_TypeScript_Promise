@@ -545,3 +545,37 @@ var Kii;
     }
     Kii.KiiObjectAPI = KiiObjectAPI;
 })(Kii || (Kii = {}));
+/// <reference path="AppAPI.ts"/>
+///<reference path="../ACLAPI.ts"/>
+///<reference path="../KiiContext.ts"/>
+var Kii;
+(function (Kii) {
+    class KiiACLAPI {
+        constructor(context) {
+            this.context = context;
+        }
+        grant(target, verb, subject) {
+            return this.exec('PUT', target, verb, subject);
+        }
+        revoke(target, verb, subject) {
+            return this.exec('DELETE', target, verb, subject);
+        }
+        exec(method, target, verb, subject) {
+            return new Promise((resolve, reject) => {
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/' + c.getAppId() +
+                    target.getPath() + '/acl/' + verb + '/' + subject.getSubject();
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod(method);
+                client.setKiiHeader(c, true);
+                client.send().then((resp) => {
+                    resolve(true);
+                }).catch((error) => {
+                    reject({ code: error.status, message: error.message });
+                });
+            });
+        }
+    }
+    Kii.KiiACLAPI = KiiACLAPI;
+})(Kii || (Kii = {}));

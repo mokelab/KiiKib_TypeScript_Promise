@@ -7,6 +7,10 @@ class BucketPage implements Page {
         this.app = app;
         this.owner = owner;
     }
+
+    loginRequired() : boolean {
+        return false;
+    }
     
     onCreate() {
         this.ractive = new Ractive({
