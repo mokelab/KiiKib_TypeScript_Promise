@@ -111,5 +111,34 @@ module Kii {
                 });
             });
         }
+
+        publish(obj : KiiObject, expireInSec? : number) : Promise<string> {
+            return new Promise<string>((resolve : (url : string) => void, reject : (err : KiiError) => void) => {
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/'+ c.getAppId() +
+		    obj.getPath() + '/body/publish';
+
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('POST');
+                client.setKiiHeader(c, true);
+                client.setContentType('application/vnd.kii.ObjectBodyPublicationRequest+json');
+
+                var p : Promise<HttpResponse>;
+                if (expireInSec === undefined) {
+                    p = client.send();
+                } else {
+                    p = client.sendJson({
+                        expiresIn : expireInSec,
+                    });
+                }
+                p.then((resp : HttpResponse) => {
+                    var url = resp.body['url'];
+                    resolve(url);
+                }).catch((error : HttpError) => {
+                    reject({code : error.status, message : error.message});
+                });
+            });
+        }
     }
 }

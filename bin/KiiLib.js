@@ -542,6 +542,33 @@ var Kii;
                 });
             });
         }
+        publish(obj, expireInSec) {
+            return new Promise((resolve, reject) => {
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/' + c.getAppId() +
+                    obj.getPath() + '/body/publish';
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('POST');
+                client.setKiiHeader(c, true);
+                client.setContentType('application/vnd.kii.ObjectBodyPublicationRequest+json');
+                var p;
+                if (expireInSec === undefined) {
+                    p = client.send();
+                }
+                else {
+                    p = client.sendJson({
+                        expiresIn: expireInSec,
+                    });
+                }
+                p.then((resp) => {
+                    var url = resp.body['url'];
+                    resolve(url);
+                }).catch((error) => {
+                    reject({ code: error.status, message: error.message });
+                });
+            });
+        }
     }
     Kii.KiiObjectAPI = KiiObjectAPI;
 })(Kii || (Kii = {}));

@@ -11,5 +11,8 @@ module Kii {
         updatePatch(obj : KiiObject, patch : any) : Promise<KiiObject>;
 
         deleteObject(obj : KiiObject) : Promise<boolean>;
+
+        publish(obj : KiiObject) : Promise<string>;
+        publish(obj : KiiObject, expireInSec : number) : Promise<string>;
     }
 }
