@@ -1,6 +1,7 @@
 module Kii {
-    export class KiiUser {
+    export class KiiThing {
         id : string;
+        vendorId : string;
         public data : any;
 
         constructor(id : string) {
@@ -11,16 +12,12 @@ module Kii {
 	     return this.id;
 	}
 
-        public getIdAsThingOwner() {
-            return 'user:' + this.id;
+        public getVendorId() {
+            return this.vendorId;
         }
 		    
 	public getPath() {
-	    return '/users/' + this.id;
+	    return '/things/' + this.id;
 	}
-
-        public getSubject() {
-            return 'UserID:' + this.id;
-        }
     }
 }

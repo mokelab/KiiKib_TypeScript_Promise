@@ -7,6 +7,9 @@ var Kii;
         getId() {
             return this.id;
         }
+        getIdAsThingOwner() {
+            return 'user:' + this.id;
+        }
         getPath() {
             return '/users/' + this.id;
         }
@@ -622,4 +625,78 @@ var Kii;
         }
     }
     Kii.KiiACLAPI = KiiACLAPI;
+})(Kii || (Kii = {}));
+var Kii;
+(function (Kii) {
+    class KiiThing {
+        constructor(id) {
+            this.id = id;
+        }
+        getId() {
+            return this.id;
+        }
+        getVendorId() {
+            return this.vendorId;
+        }
+        getPath() {
+            return '/things/' + this.id;
+        }
+    }
+    Kii.KiiThing = KiiThing;
+})(Kii || (Kii = {}));
+///<reference path="../model/KiiThing.ts"/>
+///<reference path="../model/KiiThingOwner.ts"/>
+///<reference path="./KiiError.ts"/>
+///<reference path="../ThingAPI.ts"/>
+///<reference path="../KiiContext.ts"/>
+var Kii;
+(function (Kii) {
+    class KiiThingAPI {
+        constructor(context) {
+            this.context = context;
+        }
+        create(id, password, info) {
+            return new Promise((resolve, reject) => {
+                if (info == null) {
+                    info = {};
+                }
+                info['_vendorThingID'] = id;
+                info['_password'] = password;
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/' + c.getAppId() + '/things';
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('POST');
+                client.setKiiHeader(c, false);
+                client.setContentType('application/vnd.kii.ThingRegistrationAndAuthorizationRequest+json');
+                client.sendJson(info).then((resp) => {
+                    var thingId = resp.body['_thingID'];
+                    var accessToken = resp.body['_accessToken'];
+                    this.context.setAccessToken(accessToken);
+                    var thing = new Kii.KiiThing(thingId);
+                    thing.vendorId = id;
+                    resolve(thing);
+                }).catch((error) => {
+                    reject({ code: error.status, message: error.message });
+                });
+            });
+        }
+        addOwner(thing, owner) {
+            return new Promise((resolve, reject) => {
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/' + c.getAppId() + '/things/' + thing.getId() +
+                    '/ownership/' + owner.getIdAsThingOwner();
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('PUT');
+                client.setKiiHeader(c, true);
+                client.send().then((resp) => {
+                    resolve(true);
+                }).catch((error) => {
+                    reject({ code: error.status, message: error.message });
+                });
+            });
+        }
+    }
+    Kii.KiiThingAPI = KiiThingAPI;
 })(Kii || (Kii = {}));

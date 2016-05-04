@@ -4,6 +4,7 @@ declare module Kii {
         data: any;
         constructor(id: string);
         getId(): string;
+        getIdAsThingOwner(): string;
         getPath(): string;
         getSubject(): string;
     }
@@ -205,5 +206,35 @@ declare module Kii {
         grant(target: any, verb: string, subject: any): Promise<boolean>;
         revoke(target: any, verb: string, subject: any): Promise<boolean>;
         private exec(method, target, verb, subject);
+    }
+}
+declare module Kii {
+    class KiiThing {
+        id: string;
+        vendorId: string;
+        data: any;
+        constructor(id: string);
+        getId(): string;
+        getVendorId(): string;
+        getPath(): string;
+    }
+}
+declare module Kii {
+    interface KiiThingOwner {
+        getIdAsThingOwner(): string;
+    }
+}
+declare module Kii {
+    interface ThingAPI {
+        create(id: string, password: string, info: any): Promise<KiiThing>;
+        addOwner(thing: KiiThing, owner: KiiThingOwner): Promise<boolean>;
+    }
+}
+declare module Kii {
+    class KiiThingAPI implements ThingAPI {
+        context: KiiContext;
+        constructor(context: KiiContext);
+        create(id: string, password: string, info: any): Promise<KiiThing>;
+        addOwner(thing: KiiThing, owner: KiiThingOwner): Promise<boolean>;
     }
 }
