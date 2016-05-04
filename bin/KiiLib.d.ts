@@ -96,6 +96,19 @@ declare module Kii {
     }
 }
 declare module Kii {
+    interface UserAPI {
+        findByUsername(username: string): Promise<KiiUser>;
+    }
+}
+declare module Kii {
+    class KiiUserAPI implements UserAPI {
+        context: KiiContext;
+        constructor(context: KiiContext);
+        findByUsername(username: string): Promise<KiiUser>;
+        private execGetUser(url);
+    }
+}
+declare module Kii {
     class KiiApp {
         getPath(): string;
     }

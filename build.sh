@@ -2,6 +2,7 @@
 cd src/api/impl
 tsc -target es6 \
 KiiAppAPI.ts \
+KiiUserAPI.ts \
 KiiBucketAPI.ts \
 KiiObjectAPI.ts \
 KiiACLAPI.ts \
