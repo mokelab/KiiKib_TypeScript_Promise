@@ -542,6 +542,23 @@ var Kii;
                 });
             });
         }
+        uploadBody(obj, contentType, body) {
+            return new Promise((resolve, reject) => {
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/' + c.getAppId() +
+                    obj.getPath() + '/body';
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('PUT');
+                client.setKiiHeader(c, true);
+                client.setContentType(contentType);
+                client.sendText(body).then((resp) => {
+                    resolve(true);
+                }).catch((error) => {
+                    reject({ code: error.status, message: error.message });
+                });
+            });
+        }
         publish(obj, expireInSec) {
             return new Promise((resolve, reject) => {
                 var c = this.context;

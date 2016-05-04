@@ -112,6 +112,26 @@ module Kii {
             });
         }
 
+        uploadBody(obj : KiiObject, contentType : string, body : string) : Promise<boolean> {
+            return new Promise<boolean>((resolve : (r : boolean) => void, reject : (err : KiiError) => void) => {
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/'+ c.getAppId() +
+		    obj.getPath() + '/body';
+
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('PUT');
+                client.setKiiHeader(c, true);
+                client.setContentType(contentType);
+
+                client.sendText(body).then((resp : HttpResponse) => {
+                    resolve(true);
+                }).catch((error : HttpError) => {
+                    reject({code : error.status, message : error.message});
+                });
+            });
+        }
+
         publish(obj : KiiObject, expireInSec? : number) : Promise<string> {
             return new Promise<string>((resolve : (url : string) => void, reject : (err : KiiError) => void) => {
                 var c = this.context;

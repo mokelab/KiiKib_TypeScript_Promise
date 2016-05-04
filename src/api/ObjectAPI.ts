@@ -12,6 +12,9 @@ module Kii {
 
         deleteObject(obj : KiiObject) : Promise<boolean>;
 
+        // object body
+        uploadBody(obj : KiiObject, contentType : string, body : string) : Promise<boolean>;
+
         publish(obj : KiiObject) : Promise<string>;
         publish(obj : KiiObject, expireInSec : number) : Promise<string>;
     }

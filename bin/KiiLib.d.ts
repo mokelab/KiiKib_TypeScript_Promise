@@ -174,6 +174,7 @@ declare module Kii {
         update(obj: KiiObject): Promise<KiiObject>;
         updatePatch(obj: KiiObject, patch: any): Promise<KiiObject>;
         deleteObject(obj: KiiObject): Promise<boolean>;
+        uploadBody(obj: KiiObject, contentType: string, body: string): Promise<boolean>;
         publish(obj: KiiObject): Promise<string>;
         publish(obj: KiiObject, expireInSec: number): Promise<string>;
     }
@@ -187,6 +188,7 @@ declare module Kii {
         update(obj: KiiObject): Promise<KiiObject>;
         updatePatch(obj: KiiObject, patch: any): Promise<KiiObject>;
         deleteObject(obj: KiiObject): Promise<boolean>;
+        uploadBody(obj: KiiObject, contentType: string, body: string): Promise<boolean>;
         publish(obj: KiiObject, expireInSec?: number): Promise<string>;
     }
 }
