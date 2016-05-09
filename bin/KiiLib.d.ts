@@ -222,6 +222,20 @@ declare module Kii {
     }
 }
 declare module Kii {
+    interface ServerAPI {
+        execute(api: string, params: any): Promise<ServerAPIResponse>;
+    }
+    interface ServerAPIResponse {
+    }
+}
+declare module Kii {
+    class KiiServerAPI implements ServerAPI {
+        context: KiiContext;
+        constructor(context: KiiContext);
+        execute(api: string, params: any): Promise<ServerAPIResponse>;
+    }
+}
+declare module Kii {
     class KiiThing {
         id: string;
         vendorId: string;

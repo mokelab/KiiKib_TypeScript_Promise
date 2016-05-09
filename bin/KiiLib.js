@@ -659,6 +659,33 @@ var Kii;
     }
     Kii.KiiACLAPI = KiiACLAPI;
 })(Kii || (Kii = {}));
+///<reference path="../ServerAPI.ts"/>
+var Kii;
+(function (Kii) {
+    class KiiServerAPI {
+        constructor(context) {
+            this.context = context;
+        }
+        execute(api, params) {
+            return new Promise((resolve, reject) => {
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/' + c.getAppId() +
+                    '/server-code/versions/current/' + api;
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('POST');
+                client.setKiiHeader(c, true);
+                client.setContentType('application/json');
+                client.sendJson(params).then((resp) => {
+                    resolve(resp.body);
+                }).catch((error) => {
+                    reject({ code: error.status, message: error.message });
+                });
+            });
+        }
+    }
+    Kii.KiiServerAPI = KiiServerAPI;
+})(Kii || (Kii = {}));
 var Kii;
 (function (Kii) {
     class KiiThing {

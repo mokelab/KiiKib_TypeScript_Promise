@@ -6,6 +6,7 @@ KiiUserAPI.ts \
 KiiBucketAPI.ts \
 KiiObjectAPI.ts \
 KiiACLAPI.ts \
+KiiServerAPI.ts \
 KiiThingAPI.ts \
 -d \
 -out ../../../bin/KiiLib.js 
