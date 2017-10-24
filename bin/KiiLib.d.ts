@@ -265,3 +265,32 @@ declare module Kii {
         addOwner(thing: KiiThing, owner: KiiThingOwner): Promise<boolean>;
     }
 }
+declare module Kii {
+    class KiiServerCode {
+        id: string;
+        current: boolean;
+        constructor(id: string);
+    }
+}
+declare module Kii {
+    interface AdminAPI {
+        getAppInfo(): Promise<any>;
+        getServerCodeList(): Promise<Array<KiiServerCode>>;
+        uploadServerCode(code: string): Promise<string>;
+        downloadServerCode(versionId: string): Promise<string>;
+        setCurrentServerCode(versionId: string): Promise<boolean>;
+        deleteServerCode(versionId: string): Promise<boolean>;
+    }
+}
+declare module Kii {
+    class KiiAdminAPI implements AdminAPI {
+        context: KiiContext;
+        constructor(context: KiiContext);
+        getAppInfo(): Promise<any>;
+        getServerCodeList(): Promise<Array<KiiServerCode>>;
+        uploadServerCode(code: string): Promise<string>;
+        downloadServerCode(versionId: string): Promise<string>;
+        setCurrentServerCode(versionId: string): Promise<boolean>;
+        deleteServerCode(versionId: string): Promise<boolean>;
+    }
+}

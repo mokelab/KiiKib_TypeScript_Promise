@@ -8,5 +8,6 @@ KiiObjectAPI.ts \
 KiiACLAPI.ts \
 KiiServerAPI.ts \
 KiiThingAPI.ts \
+KiiAdminAPI.ts \
 -d \
 -out ../../../bin/KiiLib.js 

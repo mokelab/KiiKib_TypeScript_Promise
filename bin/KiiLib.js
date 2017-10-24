@@ -760,3 +760,125 @@ var Kii;
     }
     Kii.KiiThingAPI = KiiThingAPI;
 })(Kii || (Kii = {}));
+var Kii;
+(function (Kii) {
+    class KiiServerCode {
+        constructor(id) {
+            this.id = id;
+        }
+    }
+    Kii.KiiServerCode = KiiServerCode;
+})(Kii || (Kii = {}));
+///<reference path="../model/KiiServerCode.ts"/>
+///<reference path="../AdminAPI.ts"/>
+///<reference path="../KiiContext.ts"/>
+var Kii;
+(function (Kii) {
+    class KiiAdminAPI {
+        constructor(context) {
+            this.context = context;
+        }
+        getAppInfo() {
+            return new Promise((resolve, reject) => {
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/' + c.getAppId();
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('GET');
+                client.setKiiHeader(c, true);
+                client.send().then((resp) => {
+                    resolve(resp.body);
+                }).catch((error) => {
+                    reject({ code: error.status, message: error.message });
+                });
+            });
+        }
+        getServerCodeList() {
+            return new Promise((resolve, reject) => {
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/' + c.getAppId() +
+                    '/server-code/versions';
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('GET');
+                client.setKiiHeader(c, true);
+                client.send().then((resp) => {
+                    var result = [];
+                    var respArray = resp.body['versions'];
+                    for (var i = 0; i < respArray.length; ++i) {
+                        var o = respArray[i];
+                        var code = new Kii.KiiServerCode(o['versionID']);
+                        code.current = o['current'];
+                        result.push(code);
+                    }
+                    resolve(result);
+                }).catch((error) => {
+                    reject({ code: error.status, message: error.message });
+                });
+            });
+        }
+        uploadServerCode(code) {
+            return new Promise((resolve, reject) => {
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/' + c.getAppId() + '/server-code';
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('POST');
+                client.setKiiHeader(c, true);
+                client.setContentType('application/javascript');
+                client.sendText(code).then((resp) => {
+                    resolve(resp.body['versionID']);
+                }).catch((error) => {
+                    reject({ code: error.status, message: error.message });
+                });
+            });
+        }
+        downloadServerCode(versionId) {
+            return new Promise((resolve, reject) => {
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/' + c.getAppId() + '/server-code/versions/' + versionId;
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('GET');
+                client.setKiiHeader(c, true);
+                client.send().then((resp) => {
+                    resolve(resp.body);
+                }).catch((error) => {
+                    reject({ code: error.status, message: error.message });
+                });
+            });
+        }
+        setCurrentServerCode(versionId) {
+            return new Promise((resolve, reject) => {
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/' + c.getAppId() + '/server-code/versions/current';
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('PUT');
+                client.setKiiHeader(c, true);
+                client.setContentType('text/plain');
+                client.sendText(versionId).then((resp) => {
+                    resolve(true);
+                }).catch((error) => {
+                    reject({ code: error.status, message: error.message });
+                });
+            });
+        }
+        deleteServerCode(versionId) {
+            return new Promise((resolve, reject) => {
+                var c = this.context;
+                var url = c.getServerUrl() + '/apps/' + c.getAppId() + '/server-code/versions/' + versionId;
+                var client = c.getNewClient();
+                client.setUrl(url);
+                client.setMethod('DELETE');
+                client.setKiiHeader(c, true);
+                client.sendText(versionId).then((resp) => {
+                    resolve(true);
+                }).catch((error) => {
+                    reject({ code: error.status, message: error.message });
+                });
+            });
+        }
+    }
+    Kii.KiiAdminAPI = KiiAdminAPI;
+})(Kii || (Kii = {}));
