@@ -98,6 +98,7 @@ declare module Kii {
 declare module Kii {
     interface UserAPI {
         findByUsername(username: string): Promise<KiiUser>;
+        fetchUser(id: string): Promise<KiiUser>;
     }
 }
 declare module Kii {
@@ -105,6 +106,7 @@ declare module Kii {
         context: KiiContext;
         constructor(context: KiiContext);
         findByUsername(username: string): Promise<KiiUser>;
+        fetchUser(id: string): Promise<KiiUser>;
         private execGetUser(url);
     }
 }

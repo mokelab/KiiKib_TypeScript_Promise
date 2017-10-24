@@ -237,9 +237,12 @@ var Kii;
             this.context = context;
         }
         findByUsername(username) {
+            return this.fetchUser('LOGIN_NAME:' + username);
+        }
+        fetchUser(id) {
             var c = this.context;
-            return this.execGetUser(c.getServerUrl() + '/apps/' + c.getAppId() +
-                '/users/LOGIN_NAME:' + username);
+            return this.execGetUser(c.getServerUrl() + '/apps/' +
+                c.getAppId() + '/users/' + id);
         }
         execGetUser(url) {
             return new Promise((resolve, reject) => {
