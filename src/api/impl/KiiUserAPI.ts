@@ -8,9 +8,13 @@ module Kii {
         }
 
         findByUsername(username : string) : Promise<KiiUser> {
+            return this.fetchUser('LOGIN_NAME:' + username);
+        }
+
+        fetchUser(id : string) : Promise<KiiUser> {
             var c : KiiContext = this.context;
-            return this.execGetUser(c.getServerUrl() + '/apps/'+ c.getAppId() + 
-                                    '/users/LOGIN_NAME:' + username);            
+            return this.execGetUser(c.getServerUrl() + '/apps/'+ 
+                                    c.getAppId() + '/users/' + id);
         }
 
         private execGetUser(url : string) : Promise<KiiUser> {

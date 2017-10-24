@@ -3,10 +3,8 @@
 module Kii {
     export interface UserAPI {
         findByUsername(username : string) : Promise<KiiUser>;
+        fetchUser(id : string) : Promise<KiiUser>;
 /*
-        fetchUser(id : string) : KiiUser;
-	fetchUser(id : string, callback : UserCallback);
-
         update(user : KiiUser) : KiiUser;
 	update(user : KiiUser, callback : UserCallback);
 
