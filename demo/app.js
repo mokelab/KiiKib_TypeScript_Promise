@@ -52,8 +52,6 @@ class TopPage {
         this.ractive = new Ractive({
             el: '#container',
             template: '#topTemplate',
-        });
-        this.ractive.on({
             appScope: () => {
                 this.showAppScopeBucket();
             },
@@ -80,11 +78,11 @@ class BucketPage {
                 fieldName: '',
                 list: [],
             },
-        });
-        this.ractive.on({
             query: () => {
                 this.query();
             },
+        });
+        this.ractive.on({
             addField: () => {
                 let name = this.ractive.get('fieldName');
                 if (name != null && name.length > 0) {

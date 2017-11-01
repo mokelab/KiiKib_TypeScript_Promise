@@ -1,0 +1,33 @@
+<header class="toolbar">
+  <h1>Object browser</h1>
+</header>
+<div class="topspace"></div>  
+
+<div style="padding:8px;">
+  <label for="name">Bucket name</label><br/>
+  <input type="text" id="name" value="{{name}}"><button class="button" on-click="@this.query()">Query</button>
+</div>
+
+{{#if list.length > 0}}
+<table>
+  <thead><tr><th>ID</th>
+      {{#fieldList:i}}
+      <th>{{.}} <span on-click="removeField:{{i}}">[-]</span></th>
+      {{/}}
+      <th><input type="text" value="{{fieldName}}"><button on-click="addField">+</button></th>
+  </tr></thead>
+  <tbody>
+    {{#list}}
+    <tr><td>{{id}}</td>
+      {{#fieldList:i}}
+      <td>{{data[.]}}</td>
+      {{/}}
+    </tr>
+    {{/}}
+  </tbody>
+</table>
+
+<div style="width: 48px;position:fixed;right:16px;bottom:16px;height: 48px;border-radius: 24px;background-color: cadetblue;cursor: pointer;">
+  <p style="margin: 12px 12px;width: 24px;height: 24px;position: relative;text-align: center;line-height: 24px;color: white;">+</p>
+</div>
+{{/if}}

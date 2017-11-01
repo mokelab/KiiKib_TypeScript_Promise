@@ -21,11 +21,11 @@ class BucketPage implements Page {
                 fieldName : '',
                 list : [],
             },
-        });
-        this.ractive.on({            
             query : () => {
                 this.query();
-            },
+            },            
+        });
+        this.ractive.on({            
             addField : () => {
                 let name = this.ractive.get('fieldName');
                 if (name != null && name.length > 0) {

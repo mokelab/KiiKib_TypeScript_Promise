@@ -14,8 +14,6 @@ class TopPage implements Page {
         this.ractive = new Ractive({
             el : '#container',
             template : '#topTemplate',
-        });
-        this.ractive.on({
             appScope : () => {
                 this.showAppScopeBucket();
             },
