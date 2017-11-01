@@ -885,3 +885,30 @@ var Kii;
     }
     Kii.KiiAdminAPI = KiiAdminAPI;
 })(Kii || (Kii = {}));
+/// <reference path="../ThingIF.ts"/>
+/// <reference path="../KiiContext.ts"/>
+var Kii;
+(function (Kii) {
+    class KiiThingIF {
+        constructor(context) {
+            this.context = context;
+        }
+        onboard(vendorId, password, ownerId) {
+            var c = this.context;
+            var url = c.getServerUrl() + '/apps/' + c.getAppId() + "/onboardings";
+            var params = {
+                vendorThingID: vendorId,
+                thingPassword: password,
+                owner: ownerId,
+            };
+            var client = this.context.getNewClient();
+            client.setUrl(url);
+            client.setMethod('POST');
+            client.setKiiHeader(c, true);
+            return client.sendJson(params).then((resp) => {
+                return resp.body;
+            });
+        }
+    }
+    Kii.KiiThingIF = KiiThingIF;
+})(Kii || (Kii = {}));

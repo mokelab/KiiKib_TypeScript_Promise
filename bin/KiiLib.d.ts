@@ -296,3 +296,20 @@ declare module Kii {
         deleteServerCode(versionId: string): Promise<boolean>;
     }
 }
+declare module Kii {
+    interface ThingIF {
+        onboard(vendorId: string, password: string, ownerId: string): Promise<OnboardResult>;
+    }
+    interface OnboardResult {
+        thingID: string;
+        accessToken: string;
+        mqttEndpoint: any;
+    }
+}
+declare module Kii {
+    class KiiThingIF implements ThingIF {
+        context: KiiContext;
+        constructor(context: KiiContext);
+        onboard(vendorId: string, password: string, ownerId: string): Promise<OnboardResult>;
+    }
+}
