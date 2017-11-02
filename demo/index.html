@@ -85,6 +85,42 @@
   </div>
 </div>
   </script>
+  <script id="thingStateTemplate" type="text/ractive">
+<header class="toolbar">
+  <h1>Thing State</h1>
+</header>
+<div class="topspace"></div>  
+
+<section class="card" style="width:450px; margin-left:auto; margin-right:auto; padding:8px;">
+  <h2>Get state</h2>
+  <label>Thing ID</label><br/>
+  <input type="text" class="match_4px" value="{{getThingID}}"/><br/>
+  <div style="text-align: right;">
+    <button class="button" on-click="@this.getState()">Get</button>
+  </div>
+  {{#if state != null}}
+  <table class="match_4px">
+    <thead><tr><th>Key</th><th>Value</th></tr></thead>
+    <tbody>
+      {{#Object.keys(state)}}
+      <tr><th>{{.}}</th><td style="text-align:center; ">{{state[.]}}</td></tr>
+      {{/}}
+    </tbody>
+  </table>
+  {{/if}}
+</section>
+
+<section class="card" style="width:450px; margin-left:auto; margin-right:auto; margin-top:16px; padding:8px;">
+  <h2>Put state</h2>
+  <label>Thing ID</label><br/>
+  <input type="text" class="match_4px" value="{{putThingID}}"/><br/>
+  <label>State</label><br/>
+  <textarea value="{{putValue}}" class="match_4px" style="padding:4px;min-height:100px;"></textarea>
+  <div style="text-align: right;">
+    <button class="button" on-click="@this.putState()">Put</button>
+  </div>
+</section>
+  </script>
   <script id="thingsTemplate" type="text/ractive">
 <header class="toolbar">
   <h1>Things</h1>
@@ -106,6 +142,7 @@
 <ul>
   <li class="listItem" on-click="@this.appScope()">Application Scope bucket</li>
   <li class="listItem" on-click="@this.onboard()">Onboard Things</li>
+  <li class="listItem" on-click="@this.thingState()">Thing State</li>
 </ul>    
   </script>
   <link rel="stylesheet" type="text/css" href="./style.css"/>
