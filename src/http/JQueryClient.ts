@@ -55,7 +55,11 @@ module jquery {
             return this.sendText(JSON.stringify(json));
         }
         
-        send() : Promise<Kii.HttpResponse> {
+        send(method? : string, url? : string) : Promise<Kii.HttpResponse> {
+            if (method !== undefined) {
+                this.setUrl(url);
+                this.setMethod(method);
+            }
             return this.sendRequest({
                 url : this.url,
                 type : this.method,

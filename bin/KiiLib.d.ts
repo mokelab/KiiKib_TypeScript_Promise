@@ -32,6 +32,7 @@ declare module Kii {
         sendText(text: string): Promise<HttpResponse>;
         sendJson(method: string, url: string, json: any): Promise<HttpResponse>;
         sendJson(json: any): Promise<HttpResponse>;
+        send(method: string, url: string): Promise<HttpResponse>;
         send(): Promise<HttpResponse>;
     }
     interface HttpResponse {
@@ -61,7 +62,7 @@ declare module jquery {
         setKiiHeader(context: Kii.KiiContext, authRequired: boolean): void;
         sendText(text: string): Promise<Kii.HttpResponse>;
         sendJson(method: string, url?: string, json?: any): Promise<Kii.HttpResponse>;
-        send(): Promise<Kii.HttpResponse>;
+        send(method?: string, url?: string): Promise<Kii.HttpResponse>;
         private sendRequest(data);
         private parseResponse(data);
     }
@@ -302,6 +303,8 @@ declare module Kii {
 declare module Kii {
     interface ThingIF {
         onboard(vendorId: string, password: string, ownerId: string): Promise<OnboardResult>;
+        putState(id: string, params: any): Promise<boolean>;
+        getState(id: string): Promise<any>;
     }
     interface OnboardResult {
         thingID: string;
@@ -314,5 +317,7 @@ declare module Kii {
         context: KiiContext;
         constructor(context: KiiContext);
         onboard(vendorId: string, password: string, ownerId: string): Promise<OnboardResult>;
+        putState(id: string, params: any): Promise<boolean>;
+        getState(id: string): Promise<any>;
     }
 }

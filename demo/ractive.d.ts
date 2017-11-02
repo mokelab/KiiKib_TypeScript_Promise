@@ -4,6 +4,7 @@ declare class Ractive {
     on(params : any);
     get(name : string) : any;
     set(name : string, value : any);
+    set(params : any);
     push(keypath : string, item : any);
     pop(keypath : string);
     unshift(keypath : string, item : any);

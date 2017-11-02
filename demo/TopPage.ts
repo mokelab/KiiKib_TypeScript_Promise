@@ -23,6 +23,9 @@ class TopPage implements Page {
             onboard : () => {
                 this.app.showPage('things/onboard');
             },            
+            thingState : () => {
+                this.app.showPage('things/state');
+            },
         });
     }
 

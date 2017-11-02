@@ -3,7 +3,7 @@
 /// <reference path="./LoginPage.ts"/>
 /// <reference path="./TopPage.ts"/>
 /// <reference path="./BucketPage.ts"/>
-/// <reference path="./ThingsPage.ts"/>
+/// <reference path="./ThingStatePage.ts"/>
 /// <reference path="./OnboardThingsPage.ts"/>
 /// <reference path="./Application.ts"/>
 declare var $;
@@ -17,8 +17,8 @@ var AppRouter = Backbone.Router.extend({
         "" : 'login',
         "top" : 'top',
         'app/buckets' : 'appBucket',
-        'things' : 'things',
         'things/onboard' : 'onboardThings',
+        'things/state' : 'thingState',        
     },
     login : function() {
         this.showPage(new LoginPage(app));
@@ -29,12 +29,12 @@ var AppRouter = Backbone.Router.extend({
     appBucket : function() {
         this.showPage(new BucketPage(app, new Kii.KiiApp()));
     },
-    things : function() {
-        this.showPage(new ThingsPage(app));
-    },
     onboardThings : function() {
           this.showPage(new OnboardThingsPage(app));
     },
+    thingState : function() {
+        this.showPage(new ThingStatePage(app));
+    },    
     showPage : function(page : Page) {
         app.page = page;
         app.page.onCreate();

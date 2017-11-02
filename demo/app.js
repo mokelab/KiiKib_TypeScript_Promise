@@ -102,6 +102,9 @@ class TopPage {
             onboard: () => {
                 this.app.showPage('things/onboard');
             },
+            thingState: () => {
+                this.app.showPage('things/state');
+            },
         });
     }
     showAppScopeBucket() {
@@ -160,7 +163,7 @@ class BucketPage {
 /// <reference path="./Page.ts"/>
 /// <reference path="./Application.ts"/>
 /// <reference path="./ractive.d.ts"/>
-class ThingsPage {
+class ThingStatePage {
     constructor(app) {
         this.app = app;
     }
@@ -170,10 +173,44 @@ class ThingsPage {
     onCreate() {
         this.ractive = new Ractive({
             el: '#container',
-            template: '#thingsTemplate',
-            create: () => {
-                this.app.showPage('things/create');
+            template: '#thingStateTemplate',
+            data: {
+                state: null,
             },
+            getState: () => {
+                this.getState();
+            },
+            putState: () => {
+                this.putState();
+            },
+        });
+    }
+    getState() {
+        var id = this.ractive.get('getThingID');
+        this.app.thingIF.getState(id).then((s) => {
+            this.ractive.set({
+                'state': s,
+                'putThingID': id,
+                'putValue': JSON.stringify(s, undefined, 4),
+            });
+        }).catch((e) => {
+            console.log(e);
+        });
+    }
+    putState() {
+        var id = this.ractive.get('putThingID');
+        var value;
+        try {
+            value = JSON.parse(this.ractive.get('putValue'));
+        }
+        catch (e) {
+            alert(e);
+            return;
+        }
+        this.app.thingIF.putState(id, value).then((b) => {
+            console.log('ok');
+        }).catch((e) => {
+            console.log(e);
         });
     }
 }
@@ -215,7 +252,7 @@ class OnboardThingsPage {
 /// <reference path="./LoginPage.ts"/>
 /// <reference path="./TopPage.ts"/>
 /// <reference path="./BucketPage.ts"/>
-/// <reference path="./ThingsPage.ts"/>
+/// <reference path="./ThingStatePage.ts"/>
 /// <reference path="./OnboardThingsPage.ts"/>
 /// <reference path="./Application.ts"/>
 var app = new Application();
@@ -224,8 +261,8 @@ var AppRouter = Backbone.Router.extend({
         "": 'login',
         "top": 'top',
         'app/buckets': 'appBucket',
-        'things': 'things',
         'things/onboard': 'onboardThings',
+        'things/state': 'thingState',
     },
     login: function () {
         this.showPage(new LoginPage(app));
@@ -236,11 +273,11 @@ var AppRouter = Backbone.Router.extend({
     appBucket: function () {
         this.showPage(new BucketPage(app, new Kii.KiiApp()));
     },
-    things: function () {
-        this.showPage(new ThingsPage(app));
-    },
     onboardThings: function () {
         this.showPage(new OnboardThingsPage(app));
+    },
+    thingState: function () {
+        this.showPage(new ThingStatePage(app));
     },
     showPage: function (page) {
         app.page = page;
