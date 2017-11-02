@@ -12,6 +12,21 @@
             "taskName": "clean",
             "type": "shell",
             "command": "sh clean.sh"
-        }
+        },
+        {
+            "taskName": "html",
+            "type": "shell",
+            "command": "cd demo && make index.html"
+        },
+        {
+            "taskName": "css",
+            "type": "shell",
+            "command": "cd demo && make css"
+        },        
+        {
+            "taskName": "demoApp",
+            "type": "shell",
+            "command": "cd demo && make app.js"
+        }        
     ]
 }

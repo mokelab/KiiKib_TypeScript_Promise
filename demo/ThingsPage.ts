@@ -1,7 +1,7 @@
 /// <reference path="./Page.ts"/>
 /// <reference path="./Application.ts"/>
 /// <reference path="./ractive.d.ts"/>
-class TopPage implements Page {
+class ThingsPage implements Page {
     app : Application;
     ractive : Ractive;
     
@@ -16,17 +16,10 @@ class TopPage implements Page {
     onCreate() {
         this.ractive = new Ractive({
             el : '#container',
-            template : '#topTemplate',
-            appScope : () => {
-                this.showAppScopeBucket();
+            template : '#thingsTemplate',
+            create : () => {
+                this.app.showPage('things/create');
             },
-            onboard : () => {
-                this.app.showPage('things/onboard');
-            },            
         });
-    }
-
-    private showAppScopeBucket() {
-        this.app.showPage('app/buckets');
     }
 }

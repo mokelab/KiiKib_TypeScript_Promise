@@ -1,0 +1,24 @@
+<header class="toolbar">
+    <h1>Top page</h1>
+</header>
+<div class="topspace"></div>
+<section class="card" style="width:450px; margin-left:auto; margin-right:auto; margin-top:8px; padding:4px;">
+    <label>App ID</label><br/>
+    <input type="text" id="appId" class="match_4px" value="{{appId}}"><br/>
+    <label>App Key</label><br/>    
+    <input type="text" id="appKey" class="match_4px" value="{{appKey}}"><br/>
+    <label>Site</label><br/>
+    <select value="{{site}}" class="match_4px">
+        {{#sites}}
+        <option value="{{url}}">{{name}}</option>
+        {{/}}
+    </select><br/>        
+    <label>Identifier</label><br/>
+    <input type="text" id="id" class="match_4px" value="{{id}}"><br/>
+    <label>Password</label><br/>
+    <input type="password" id="pass" class="match_4px" value="{{pass}}"><br/>
+
+    <div style="text-align:right;">
+        <button on-click="login" class="button">Login</button>
+    </div>
+</section>

@@ -60,7 +60,12 @@ var jquery;
                 processData: false
             });
         }
-        sendJson(json) {
+        sendJson(method, url, json) {
+            if (url === undefined) {
+                return this.sendText(JSON.stringify(method));
+            }
+            this.setUrl(url);
+            this.setMethod(method);
             return this.sendText(JSON.stringify(json));
         }
         send() {
@@ -147,6 +152,9 @@ var Kii;
         getServerUrl() {
             return this.url;
         }
+        getAppPath() {
+            return this.url + "/apps/" + this.appId;
+        }
         setAccessToken(value) {
             this.token = value;
         }
@@ -164,6 +172,11 @@ var Kii;
         }
         getNewClient() {
             return this.clientFactory();
+        }
+        getNewKiiClient(hasAuthHeader) {
+            var client = this.clientFactory();
+            client.setKiiHeader(this, hasAuthHeader);
+            return client;
         }
     }
     Kii.KiiContext = KiiContext;
@@ -894,18 +907,16 @@ var Kii;
             this.context = context;
         }
         onboard(vendorId, password, ownerId) {
-            var c = this.context;
-            var url = c.getServerUrl() + '/apps/' + c.getAppId() + "/onboardings";
+            var url = this.context.getAppPath() + "/onboardings";
             var params = {
                 vendorThingID: vendorId,
                 thingPassword: password,
                 owner: ownerId,
             };
-            var client = this.context.getNewClient();
-            client.setUrl(url);
-            client.setMethod('POST');
-            client.setKiiHeader(c, true);
-            return client.sendJson(params).then((resp) => {
+            var client = this.context.getNewKiiClient(true);
+            client.setContentType('application/vnd.kii.onboardingWithVendorThingIDByOwner+json');
+            return client.sendJson('POST', url, params)
+                .then((resp) => {
                 return resp.body;
             });
         }
