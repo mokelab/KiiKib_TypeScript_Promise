@@ -17,7 +17,9 @@ module Kii {
         sendJson(method : string, url : string, json : any) : Promise<HttpResponse>;
         sendJson(json : any) : Promise<HttpResponse>;
 
+        send(method : string, url : string) : Promise<HttpResponse>;
         send() : Promise<HttpResponse>;
+        
     }
 
     export interface HttpResponse {
