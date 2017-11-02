@@ -30,6 +30,7 @@ declare module Kii {
         setHeader(key: string, value: string): any;
         setKiiHeader(context: KiiContext, authRequired: boolean): any;
         sendText(text: string): Promise<HttpResponse>;
+        sendJson(method: string, url: string, json: any): Promise<HttpResponse>;
         sendJson(json: any): Promise<HttpResponse>;
         send(): Promise<HttpResponse>;
     }
@@ -59,7 +60,7 @@ declare module jquery {
         setHeader(key: string, value: string): void;
         setKiiHeader(context: Kii.KiiContext, authRequired: boolean): void;
         sendText(text: string): Promise<Kii.HttpResponse>;
-        sendJson(json: any): Promise<Kii.HttpResponse>;
+        sendJson(method: string, url?: string, json?: any): Promise<Kii.HttpResponse>;
         send(): Promise<Kii.HttpResponse>;
         private sendRequest(data);
         private parseResponse(data);
@@ -77,12 +78,14 @@ declare module Kii {
         getAppId(): string;
         getAppKey(): string;
         getServerUrl(): string;
+        getAppPath(): string;
         setAccessToken(value: string): void;
         getAccessToken(): string;
         setDeviceId(value: string): void;
         getDeviceId(): string;
         setClientFactory(factory: () => HttpClient): void;
         getNewClient(): HttpClient;
+        getNewKiiClient(hasAuthHeader: boolean): HttpClient;
     }
 }
 declare module Kii {
@@ -294,5 +297,22 @@ declare module Kii {
         downloadServerCode(versionId: string): Promise<string>;
         setCurrentServerCode(versionId: string): Promise<boolean>;
         deleteServerCode(versionId: string): Promise<boolean>;
+    }
+}
+declare module Kii {
+    interface ThingIF {
+        onboard(vendorId: string, password: string, ownerId: string): Promise<OnboardResult>;
+    }
+    interface OnboardResult {
+        thingID: string;
+        accessToken: string;
+        mqttEndpoint: any;
+    }
+}
+declare module Kii {
+    class KiiThingIF implements ThingIF {
+        context: KiiContext;
+        constructor(context: KiiContext);
+        onboard(vendorId: string, password: string, ownerId: string): Promise<OnboardResult>;
     }
 }

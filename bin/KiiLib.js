@@ -60,7 +60,12 @@ var jquery;
                 processData: false
             });
         }
-        sendJson(json) {
+        sendJson(method, url, json) {
+            if (url === undefined) {
+                return this.sendText(JSON.stringify(method));
+            }
+            this.setUrl(url);
+            this.setMethod(method);
             return this.sendText(JSON.stringify(json));
         }
         send() {
@@ -147,6 +152,9 @@ var Kii;
         getServerUrl() {
             return this.url;
         }
+        getAppPath() {
+            return this.url + "/apps/" + this.appId;
+        }
         setAccessToken(value) {
             this.token = value;
         }
@@ -164,6 +172,11 @@ var Kii;
         }
         getNewClient() {
             return this.clientFactory();
+        }
+        getNewKiiClient(hasAuthHeader) {
+            var client = this.clientFactory();
+            client.setKiiHeader(this, hasAuthHeader);
+            return client;
         }
     }
     Kii.KiiContext = KiiContext;
@@ -884,4 +897,29 @@ var Kii;
         }
     }
     Kii.KiiAdminAPI = KiiAdminAPI;
+})(Kii || (Kii = {}));
+/// <reference path="../ThingIF.ts"/>
+/// <reference path="../KiiContext.ts"/>
+var Kii;
+(function (Kii) {
+    class KiiThingIF {
+        constructor(context) {
+            this.context = context;
+        }
+        onboard(vendorId, password, ownerId) {
+            var url = this.context.getAppPath() + "/onboardings";
+            var params = {
+                vendorThingID: vendorId,
+                thingPassword: password,
+                owner: ownerId,
+            };
+            var client = this.context.getNewKiiClient(true);
+            client.setContentType('application/vnd.kii.onboardingWithVendorThingIDByOwner+json');
+            return client.sendJson('POST', url, params)
+                .then((resp) => {
+                return resp.body;
+            });
+        }
+    }
+    Kii.KiiThingIF = KiiThingIF;
 })(Kii || (Kii = {}));

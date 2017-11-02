@@ -2,21 +2,22 @@
 
 module Kii {
     export interface HttpClient {
-	setUrl(url : string);
+        setUrl(url : string);
 
-	setMethod(method : string);
-	  
-	setContentType(value : string);
+        setMethod(method : string);
+        
+        setContentType(value : string);
 
-	setHeader(key : string, value : string);
+        setHeader(key : string, value : string);
 
-	setKiiHeader(context : KiiContext, authRequired : boolean);
+        setKiiHeader(context : KiiContext, authRequired : boolean);
 
-	sendText(text : string) : Promise<HttpResponse>;
-	
-	sendJson(json : any) : Promise<HttpResponse>;
+        sendText(text : string) : Promise<HttpResponse>;
+        
+        sendJson(method : string, url : string, json : any) : Promise<HttpResponse>;
+        sendJson(json : any) : Promise<HttpResponse>;
 
-	send() : Promise<HttpResponse>;
+        send() : Promise<HttpResponse>;
     }
 
     export interface HttpResponse {

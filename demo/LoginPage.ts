@@ -41,7 +41,7 @@ class LoginPage implements Page {
         
         this.app.initKiiAPI(appId, appKey, site);
         this.app.appAPI.login(id, pass).then((user : Kii.KiiUser) => {
-            this.app.saveContext();
+            this.app.saveContext(user);
             this.app.showPage('top');
         }).catch((error : Kii.KiiError) => {
             console.log('error!' + error);

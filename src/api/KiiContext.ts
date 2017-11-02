@@ -6,54 +6,64 @@ module Kii {
         appKey : string;
         url : string;
         token : string;
-	deviceId : string;	
-	clientFactory : () => HttpClient;
+        deviceId : string;	
+        clientFactory : () => HttpClient;
 
         constructor(appId : string, appKey : string, url : string) {
             this.appId = appId;
             this.appKey = appKey;
-	    this.url = url;
-	    
-	    this.clientFactory = () => {
-		return new jquery.JQueryClient();
+            this.url = url;
+            
+            this.clientFactory = () => {
+                return new jquery.JQueryClient();
             };
         }
 
         getAppId() : string {
-	    return this.appId;
+            return this.appId;
         }
 
-	getAppKey() : string {
-	    return this.appKey;
-	}
+        getAppKey() : string {
+            return this.appKey;
+        }
 
-	getServerUrl() : string {
-	    return this.url;
-	}
+        getServerUrl() : string {
+            return this.url;
+        }
 
-	setAccessToken(value : string) {
-	    this.token = value;
-	}
+        getAppPath() : string {
+            return this.url + "/apps/" + this.appId;
+        }
 
-	getAccessToken() : string {
-	    return this.token;
-	}
-	
-	setDeviceId(value : string) {
-	    this.deviceId = value;
-	}
+        setAccessToken(value : string) {
+            this.token = value;
+        }
 
-	getDeviceId() : string {
-	    return this.deviceId;
-	}	
+        getAccessToken() : string {
+            return this.token;
+        }
+        
+        setDeviceId(value : string) {
+            this.deviceId = value;
+        }
 
-	setClientFactory(factory : () => HttpClient) {
-	    this.clientFactory = factory;
-	}
+        getDeviceId() : string {
+            return this.deviceId;
+        }	
 
-	getNewClient() : HttpClient {
+        setClientFactory(factory : () => HttpClient) {
+            this.clientFactory = factory;
+        }
+
+        getNewClient() : HttpClient {
             return this.clientFactory();
-	}      
+        }      
+
+        getNewKiiClient(hasAuthHeader : boolean) : HttpClient {
+            var client = this.clientFactory();
+            client.setKiiHeader(this, hasAuthHeader);
+            return client;
+        }              
 
   }
 }
