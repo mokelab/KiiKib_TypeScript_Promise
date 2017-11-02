@@ -32,5 +32,14 @@ module Kii {
                     return true;
                 });            
         }
+
+        getState(id : string) : Promise<any> {
+            var url = this.context.getAppPath() + "/targets/thing:" + id + "/states";
+            var client = this.context.getNewKiiClient(true);  
+            return client.send('GET', url)
+                .then((resp : HttpResponse) => {
+                    return resp.body;
+                });                        
+        }
     }
 }

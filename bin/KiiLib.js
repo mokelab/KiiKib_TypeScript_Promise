@@ -68,7 +68,11 @@ var jquery;
             this.setMethod(method);
             return this.sendText(JSON.stringify(json));
         }
-        send() {
+        send(method, url) {
+            if (method !== undefined) {
+                this.setUrl(url);
+                this.setMethod(method);
+            }
             return this.sendRequest({
                 url: this.url,
                 type: this.method,
@@ -927,6 +931,14 @@ var Kii;
             return client.sendJson('PUT', url, params)
                 .then((resp) => {
                 return true;
+            });
+        }
+        getState(id) {
+            var url = this.context.getAppPath() + "/targets/thing:" + id + "/states";
+            var client = this.context.getNewKiiClient(true);
+            return client.send('GET', url)
+                .then((resp) => {
+                return resp.body;
             });
         }
     }
