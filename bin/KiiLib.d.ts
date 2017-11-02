@@ -302,6 +302,7 @@ declare module Kii {
 declare module Kii {
     interface ThingIF {
         onboard(vendorId: string, password: string, ownerId: string): Promise<OnboardResult>;
+        putState(id: string, params: any): Promise<boolean>;
     }
     interface OnboardResult {
         thingID: string;
@@ -314,5 +315,6 @@ declare module Kii {
         context: KiiContext;
         constructor(context: KiiContext);
         onboard(vendorId: string, password: string, ownerId: string): Promise<OnboardResult>;
+        putState(id: string, params: any): Promise<boolean>;
     }
 }

@@ -22,5 +22,15 @@ module Kii {
                     return <OnboardResult>resp.body;
                 });
         }
+
+        putState(id : string, params : any) : Promise<boolean> {
+            var url = this.context.getAppPath() + "/targets/thing:" + id + "/states";
+            var client = this.context.getNewKiiClient(true);  
+            client.setContentType('application/json');
+            return client.sendJson('PUT', url, params)
+                .then((resp : HttpResponse) => {
+                    return true;
+                });            
+        }
     }
 }

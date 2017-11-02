@@ -920,6 +920,15 @@ var Kii;
                 return resp.body;
             });
         }
+        putState(id, params) {
+            var url = this.context.getAppPath() + "/targets/thing:" + id + "/states";
+            var client = this.context.getNewKiiClient(true);
+            client.setContentType('application/json');
+            return client.sendJson('PUT', url, params)
+                .then((resp) => {
+                return true;
+            });
+        }
     }
     Kii.KiiThingIF = KiiThingIF;
 })(Kii || (Kii = {}));
