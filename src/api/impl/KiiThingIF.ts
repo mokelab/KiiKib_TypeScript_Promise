@@ -15,7 +15,8 @@ module Kii {
                 thingPassword : password,
                 owner : ownerId,
             };
-	        var client = this.context.getNewKiiClient(true);                
+            var client = this.context.getNewKiiClient(true);  
+            client.setContentType('application/vnd.kii.onboardingWithVendorThingIDByOwner+json');              
             return client.sendJson('POST', url, params)
                 .then((resp : HttpResponse) => {
                     return <OnboardResult>resp.body;

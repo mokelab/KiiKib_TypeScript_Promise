@@ -907,13 +907,15 @@ var Kii;
             this.context = context;
         }
         onboard(vendorId, password, ownerId) {
+            var url = this.context.getAppPath() + "/onboardings";
             var params = {
                 vendorThingID: vendorId,
                 thingPassword: password,
                 owner: ownerId,
             };
             var client = this.context.getNewKiiClient(true);
-            return client.sendJson('POST', this.context.getAppPath() + "/onboardings", params)
+            client.setContentType('application/vnd.kii.onboardingWithVendorThingIDByOwner+json');
+            return client.sendJson('POST', url, params)
                 .then((resp) => {
                 return resp.body;
             });

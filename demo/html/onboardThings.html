@@ -1,0 +1,16 @@
+<header class="toolbar">
+  <h1>Onboard Things</h1>
+</header>
+<div class="topspace"></div>  
+
+<div class="card" style="width:450px; margin-left:auto; margin-right:auto; padding:8px; ">
+  <label>Vendor ID</label><br/>
+  <input type="text" class="match_4px" value="{{vendorID}}"/><br/>
+  <label>Password</label><br/>
+  <input type="password" class="match_4px" value="{{password}}"/><br/>  
+  <label>Owner ID</label><br/>
+  <input type="text" class="match_4px" value="{{ownerID}}"/><br/>  
+  <div style="text-align: right;">
+    <button class="button" on-click="@this.submit()">Create</button>
+  </div>
+</div>

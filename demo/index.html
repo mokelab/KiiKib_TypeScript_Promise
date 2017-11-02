@@ -67,6 +67,36 @@
     </div>
 </section>
   </script>
+  <script id="onboardThingsTemplate" type="text/ractive">
+<header class="toolbar">
+  <h1>Onboard Things</h1>
+</header>
+<div class="topspace"></div>  
+
+<div class="card" style="width:450px; margin-left:auto; margin-right:auto; padding:8px; ">
+  <label>Vendor ID</label><br/>
+  <input type="text" class="match_4px" value="{{vendorID}}"/><br/>
+  <label>Password</label><br/>
+  <input type="password" class="match_4px" value="{{password}}"/><br/>  
+  <label>Owner ID</label><br/>
+  <input type="text" class="match_4px" value="{{ownerID}}"/><br/>  
+  <div style="text-align: right;">
+    <button class="button" on-click="@this.submit()">Create</button>
+  </div>
+</div>
+  </script>
+  <script id="thingsTemplate" type="text/ractive">
+<header class="toolbar">
+  <h1>Things</h1>
+</header>
+<div class="topspace"></div>  
+
+<section style="position:fixed;right:16px;bottom:16px">    
+  <button class="fab" on-click="@this.create()">
+    <img src="./img/ic_plus.png"/>
+  </button>
+</section>
+  </script>
   <script id="topTemplate" type="text/ractive">
 <header class="toolbar">
   <h1>Main menu</h1>
@@ -75,6 +105,7 @@
 
 <ul>
   <li class="listItem" on-click="@this.appScope()">Application Scope bucket</li>
+  <li class="listItem" on-click="@this.onboard()">Onboard Things</li>
 </ul>    
   </script>
   <link rel="stylesheet" type="text/css" href="./style.css"/>
