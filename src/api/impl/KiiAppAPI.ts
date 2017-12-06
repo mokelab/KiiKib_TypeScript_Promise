@@ -23,6 +23,32 @@ module Kii {
             });
         }
 
+        loginAsThing(vendorThingId : string, password : string) : Promise<KiiThing> {
+            var c : KiiContext = this.context;
+            var url = c.getServerUrl() + '/oauth2/token';
+
+            let params = {
+                grant_type : 'password',
+                username : 'VENDOR_THING_ID:' + vendorThingId,
+                password : password,
+            };
+
+            var client : HttpClient = c.getNewClient();
+            client.setUrl(url);
+            client.setMethod('POST');
+            client.setHeader('Authorization', 'Basic ' + btoa(c.getAppId() + ":" + c.getAppKey()));
+            client.setContentType('application/vnd.kii.OauthTokenRequest+json');
+
+            return client.sendJson(params).then((resp : HttpResponse) => {
+                var accessToken = resp.body['access_token'];
+                var id = resp.body['id'];
+                this.context.setAccessToken(accessToken);
+                let t = new KiiThing(id);
+                t.vendorId = vendorThingId;
+                return t;
+            });
+        }
+
         signUp(info : any, password : string) : Promise<KiiUser> {
             return new Promise<KiiUser>((resolve : (user : KiiUser) => void, reject : (err : KiiError) => void) => {
 	        info['password'] = password;

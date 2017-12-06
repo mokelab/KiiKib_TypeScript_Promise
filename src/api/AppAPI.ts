@@ -1,4 +1,5 @@
 ///<reference path="../model/KiiUser.ts"/>
+///<reference path="../model/KiiThing.ts"/>
 ///<reference path="./KiiError.ts"/>
 module Kii {
     export interface AppAPI {
@@ -9,6 +10,8 @@ module Kii {
 */
 
         loginAsAdmin(clientId : string, clientSecret : string) : Promise<KiiUser>;
+
+        loginAsThing(vendorThingId : string, password : string) : Promise<KiiThing>;
         signUp(info : any, password : string) : Promise<KiiUser>;
 /*
         deleteUser(user : KiiUser);

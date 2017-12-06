@@ -10,6 +10,17 @@ declare module Kii {
     }
 }
 declare module Kii {
+    class KiiThing {
+        id: string;
+        vendorId: string;
+        data: any;
+        constructor(id: string);
+        getId(): string;
+        getVendorId(): string;
+        getPath(): string;
+    }
+}
+declare module Kii {
     interface KiiError {
         code: number;
         message: string;
@@ -19,6 +30,7 @@ declare module Kii {
     interface AppAPI {
         login(userIdentifier: string, password: string): Promise<KiiUser>;
         loginAsAdmin(clientId: string, clientSecret: string): Promise<KiiUser>;
+        loginAsThing(vendorThingId: string, password: string): Promise<KiiThing>;
         signUp(info: any, password: string): Promise<KiiUser>;
     }
 }
@@ -94,6 +106,7 @@ declare module Kii {
         constructor(context: KiiContext);
         login(userIdentifier: string, password: string): Promise<KiiUser>;
         loginAsAdmin(clientId: string, clientSecret: string): Promise<KiiUser>;
+        loginAsThing(vendorThingId: string, password: string): Promise<KiiThing>;
         signUp(info: any, password: string): Promise<KiiUser>;
         private execLogin(params);
     }
@@ -238,17 +251,6 @@ declare module Kii {
         context: KiiContext;
         constructor(context: KiiContext);
         execute(api: string, params: any): Promise<ServerAPIResponse>;
-    }
-}
-declare module Kii {
-    class KiiThing {
-        id: string;
-        vendorId: string;
-        data: any;
-        constructor(id: string);
-        getId(): string;
-        getVendorId(): string;
-        getPath(): string;
     }
 }
 declare module Kii {

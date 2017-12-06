@@ -19,7 +19,26 @@ var Kii;
     }
     Kii.KiiUser = KiiUser;
 })(Kii || (Kii = {}));
+var Kii;
+(function (Kii) {
+    class KiiThing {
+        constructor(id) {
+            this.id = id;
+        }
+        getId() {
+            return this.id;
+        }
+        getVendorId() {
+            return this.vendorId;
+        }
+        getPath() {
+            return '/things/' + this.id;
+        }
+    }
+    Kii.KiiThing = KiiThing;
+})(Kii || (Kii = {}));
 ///<reference path="../model/KiiUser.ts"/>
+///<reference path="../model/KiiThing.ts"/>
 ///<reference path="./KiiError.ts"/>
 /// <reference path="../api/KiiContext.ts"/>
 /// <reference path="./HttpClient.ts" />
@@ -199,6 +218,28 @@ var Kii;
             return this.execLogin({
                 'client_id': clientId,
                 'client_secret': clientSecret,
+            });
+        }
+        loginAsThing(vendorThingId, password) {
+            var c = this.context;
+            var url = c.getServerUrl() + '/oauth2/token';
+            let params = {
+                grant_type: 'password',
+                username: 'VENDOR_THING_ID:' + vendorThingId,
+                password: password,
+            };
+            var client = c.getNewClient();
+            client.setUrl(url);
+            client.setMethod('POST');
+            client.setHeader('Authorization', 'Basic ' + btoa(c.getAppId() + ":" + c.getAppKey()));
+            client.setContentType('application/vnd.kii.OauthTokenRequest+json');
+            return client.sendJson(params).then((resp) => {
+                var accessToken = resp.body['access_token'];
+                var id = resp.body['id'];
+                this.context.setAccessToken(accessToken);
+                let t = new Kii.KiiThing(id);
+                t.vendorId = vendorThingId;
+                return t;
             });
         }
         signUp(info, password) {
@@ -701,24 +742,6 @@ var Kii;
         }
     }
     Kii.KiiServerAPI = KiiServerAPI;
-})(Kii || (Kii = {}));
-var Kii;
-(function (Kii) {
-    class KiiThing {
-        constructor(id) {
-            this.id = id;
-        }
-        getId() {
-            return this.id;
-        }
-        getVendorId() {
-            return this.vendorId;
-        }
-        getPath() {
-            return '/things/' + this.id;
-        }
-    }
-    Kii.KiiThing = KiiThing;
 })(Kii || (Kii = {}));
 ///<reference path="../model/KiiThing.ts"/>
 ///<reference path="../model/KiiThingOwner.ts"/>
